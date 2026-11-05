@@ -234,6 +234,7 @@ function connectEvents() {
     events.addEventListener('monitors', (e) => {
         state.monitors = JSON.parse(e.data).data;
         renderMonitorTabs();
+        renderPauseControl();
     });
     on('finding', (finding) => {
         if (state.findings.some((f) => f.id === finding.id)) return;
@@ -386,7 +387,8 @@ async function deleteMonitor() {
 function renderPauseControl() {
     const remove = document.getElementById('delete-button');
     const running = (state.configured || isStarting()) && !state.paused;
-    remove.hidden = state.readOnly;
+    // Deleting the only monitor recreates it empty, so an unsaved one has nothing to delete.
+    remove.hidden = state.readOnly || (!state.config && (state.monitors?.length ?? 0) <= 1);
     remove.disabled = running;
     remove.title = running ? 'Stop monitoring to delete this monitor' : 'Removes this monitor’s configuration and finding history';
     remove.onclick = deleteMonitor;
