@@ -1,3 +1,4 @@
+import { getBase58Decoder } from '@solana/kit';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -27,6 +28,8 @@ export interface IxSpec {
     accounts?: [name: string, pubkey: string, isSigner?: boolean][];
     args?: Record<string, unknown>;
     inner?: IxSpec[];
+    /** An instruction the parser could not decode: sent as `rawData` and `rawAccounts` only. */
+    raw?: { data: Uint8Array; accounts: string[] };
 }
 
 export interface TxOptions {
@@ -61,6 +64,20 @@ export function tx(signature: string, slot: number, instructions: IxSpec[], opti
 }
 
 function wireIx(spec: IxSpec, instructionIndex: number, innerInstructionIndex: number | null) {
+    if (spec.raw) {
+        return {
+            instructionIndex,
+            innerInstructionIndex,
+            stackHeight: innerInstructionIndex === null ? 1 : 2,
+            programId: spec.programId,
+            programName: null,
+            instructionName: null,
+            summary: null,
+            decoded: null,
+            rawData: getBase58Decoder().decode(spec.raw.data),
+            rawAccounts: spec.raw.accounts,
+        };
+    }
     return {
         instructionIndex,
         innerInstructionIndex,

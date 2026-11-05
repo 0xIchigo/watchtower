@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { getAddressEncoder, address } from '@solana/kit';
 import { describe, expect, it, vi } from 'vitest';
 import { PROGRAMS } from '../src/constants.js';
@@ -6,6 +8,8 @@ import { Engine } from '../src/engine.js';
 import { parseUnits } from '../src/format.js';
 import type { ParsedEventsClient } from '../src/helius/parsedEvents.js';
 import { checkIdlChanges } from '../src/idlWatch.js';
+import { fromParsedEvents } from '../src/model.js';
+import type { ParsedTransactionResult } from 'helius-sdk/parsedEvents/types';
 import { context, KEYS, tx } from './helpers.js';
 
 const REAL = {
@@ -146,6 +150,105 @@ describe('upgrade-proposal', () => {
             ctx,
         );
         expect(findings.filter((f) => f.detector === 'upgrade-proposal')).toEqual([]);
+    });
+});
+
+describe('Squads v4 transaction buffers', () => {
+    const SQUADS_BUFFER = 'Buffer11111111111111111111111111111111111111';
+    const u32 = (n: number) => [n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >> 24) & 0xff];
+    const bytes = (hex: string, ...rest: number[][]) => Uint8Array.from([...Buffer.from(hex, 'hex'), ...rest.flat()]);
+
+    /** `transactionBufferCreate`, `transactionBufferExtend` and `vaultTransactionCreateFromBuffer` as Parsed Streams sends them: undecoded. */
+    function bufferCreate(message: Uint8Array, chunk: Uint8Array) {
+        const hash = [...createHash('sha256').update(message).digest()];
+        const data = bytes('f5c9716c253f1d59', [0, 0], hash, [message.length & 0xff, message.length >> 8], u32(chunk.length), [...chunk]);
+        return {
+            programId: PROGRAMS.squadsV4,
+            name: null,
+            raw: { data, accounts: [KEYS.multisig, SQUADS_BUFFER, KEYS.member, KEYS.member, PROGRAMS.system] },
+        };
+    }
+    function bufferExtend(chunk: Uint8Array) {
+        const data = bytes('e69d433805eef592', u32(chunk.length), [...chunk]);
+        return { programId: PROGRAMS.squadsV4, name: null, raw: { data, accounts: [KEYS.multisig, SQUADS_BUFFER, KEYS.member] } };
+    }
+    function createFromBuffer() {
+        const accounts = [KEYS.multisig, KEYS.configTx, KEYS.member, KEYS.member, PROGRAMS.system, SQUADS_BUFFER, KEYS.member];
+        return {
+            programId: PROGRAMS.squadsV4,
+            name: null,
+            raw: { data: bytes('de36954457f630e7', [0, 0], u32(6), [0, 0, 0, 0, 0, 0], [0]), accounts },
+        };
+    }
+    const proposalCreate = {
+        programId: PROGRAMS.squadsV4,
+        name: 'proposalCreate',
+        accounts: [
+            ['multisig', KEYS.multisig],
+            ['proposal', KEYS.proposal],
+            ['creator', KEYS.member, true],
+        ] as [string, string, boolean?][],
+    };
+    const message = Uint8Array.from(Buffer.from(upgradeMessage(), 'base64'));
+    const [first, rest] = [message.subarray(0, 100), message.subarray(100)];
+
+    it('reassembles an upgrade proposed through a buffer, then links the approval to it', () => {
+        const ctx = realContext();
+        detect(tx('sig-buffer-create', 98, [bufferCreate(message, first)]), ctx);
+        detect(tx('sig-buffer-extend', 99, [bufferExtend(rest)]), ctx);
+        const proposed = detect(tx('sig-propose', 100, [createFromBuffer(), proposalCreate]), ctx).filter(
+            (f) => f.detector === 'upgrade-proposal',
+        );
+        expect(proposed).toHaveLength(1);
+        expect(proposed[0]).toMatchObject({ severity: 'high', title: 'Program upgrade proposed', subject: KEYS.multisig });
+        expect(proposed[0]!.details).toMatchObject({ Proposer: KEYS.member, Buffer: REAL.buffer, 'Proposal transaction': KEYS.configTx });
+
+        const approved = detect(
+            tx('sig-approve', 110, [
+                {
+                    programId: PROGRAMS.squadsV4,
+                    name: 'proposalApprove',
+                    accounts: [
+                        ['multisig', KEYS.multisig],
+                        ['member', KEYS.attacker, true],
+                        ['proposal', KEYS.proposal],
+                    ],
+                },
+            ]),
+            ctx,
+        ).filter((f) => f.detector === 'upgrade-proposal');
+        expect(approved[0]).toMatchObject({ title: 'Program upgrade approved by a member' });
+    });
+
+    it('ignores a buffer chunk seen twice, as when backfill and the stream both deliver it', () => {
+        const ctx = realContext();
+        detect(tx('sig-buffer-create', 98, [bufferCreate(message, first)]), ctx);
+        detect(tx('sig-buffer-extend', 99, [bufferExtend(rest)]), ctx);
+        detect(tx('sig-buffer-extend', 99, [bufferExtend(rest)]), ctx);
+        const proposed = detect(tx('sig-propose', 100, [createFromBuffer(), proposalCreate]), ctx);
+        expect(proposed.map((f) => f.title)).toContain('Program upgrade proposed');
+    });
+
+    it('reports a proposal whose buffer was not seen in full as undecoded, without guessing', () => {
+        const ctx = realContext();
+        detect(tx('sig-buffer-create', 98, [bufferCreate(message, first)]), ctx);
+        const findings = detect(tx('sig-propose', 100, [createFromBuffer(), proposalCreate]), ctx);
+        expect(findings.filter((f) => f.detector === 'upgrade-proposal')).toEqual([]);
+        expect(findings.find((f) => f.detector === 'multisig-proposal')!.details['Would do']).toBe('contents could not be decoded');
+    });
+
+    it('decodes a real mainnet proposal written across two buffer transactions', () => {
+        /** A Squads v4 proposal of 5 calls: `transactionBufferCreate`, `transactionBufferExtend`, then `vaultTransactionCreateFromBuffer`. */
+        const fixture = JSON.parse(
+            readFileSync(new URL('./fixtures/squads-v4-buffer.json', import.meta.url), 'utf8'),
+        ) as ParsedTransactionResult[];
+        const multisig = '2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi';
+        const ctx = context();
+        ctx.targets.multisigs.set(multisig, { address: multisig, label: 'Ops multisig', version: 4, threshold: 1, timeLockSeconds: 0 });
+        const findings = fixture.flatMap((result) => detect(fromParsedEvents(result)!, ctx));
+        const created = findings.find((f) => f.detector === 'multisig-proposal')!;
+        expect(created.details['Would do']).toMatch(/^call program \S+ ×5$/);
+        expect(created.details['Proposal transaction']).toBe('AFnixFgNEu8uRjq2mcMz4EaHYrEkAGPWwKTMh6DPhhsc');
     });
 });
 

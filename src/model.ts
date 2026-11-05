@@ -40,6 +40,8 @@ export interface ParsedInstruction {
     args: Record<string, unknown> | null;
     accounts: DecodedAccount[] | null;
     rawAccounts: string[] | null;
+    /** Base58 instruction data; Parsed Streams sends it only when the instruction is not decoded. */
+    rawData: string | null;
     summary: ParsedSummary | null;
 }
 
@@ -96,6 +98,7 @@ function toInstruction(ix: WireInstruction): ParsedInstruction {
         args: ix.decoded?.args ?? null,
         accounts: ix.decoded?.accounts ?? null,
         rawAccounts: ix.rawAccounts ?? null,
+        rawData: ix.rawData ?? null,
         summary: ix.summary ?? null,
     };
 }

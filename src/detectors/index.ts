@@ -1,4 +1,5 @@
 import { severityRank } from '../config.js';
+import { decodeTransactionBuffers } from '../discover/squads.js';
 import type { ParsedTx } from '../model.js';
 import { linkAttackStages } from './attackChain.js';
 import { keyAuthority } from './keyAuthority.js';
@@ -37,6 +38,7 @@ export function detect(tx: ParsedTx, ctx: DetectorContext): Finding[] {
 }
 
 export function runDetectors(tx: ParsedTx, ctx: DetectorContext): Finding[] {
+    if (tx.succeeded) decodeTransactionBuffers(tx, ctx.state);
     const findings = DETECTORS.filter((d) => tx.succeeded || d.includeFailed).flatMap((d) => d.detect(tx, ctx));
     if (findings.length > 0 && usesDurableNonce(tx)) {
         for (const finding of findings) {

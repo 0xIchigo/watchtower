@@ -6,7 +6,13 @@ import { account, nameOf, normalizeName, signers, type ParsedInstruction, type P
 import { usesDurableNonce } from './nonce.js';
 import { escalate, maxSeverity } from './severity.js';
 import { findingFor, type Detector, type DetectorContext, type Finding, type WatchedMultisig } from './types.js';
-import { executionText, isWatchedLoaderChange, proposedInstructions, sameTransactionProposal } from './upgradeProposal.js';
+import {
+    executionText,
+    isWatchedLoaderChange,
+    proposedInstructions,
+    sameTransactionProposal,
+    V4_TRANSACTION_CREATES,
+} from './upgradeProposal.js';
 
 const ID = 'multisig-proposal';
 const FAST_EXECUTION_SECONDS = 3_600;
@@ -64,7 +70,7 @@ function proposalCreated(
     multisig: WatchedMultisig,
     ctx: DetectorContext,
 ): Finding | null {
-    const isV4 = ix.programId === PROGRAMS.squadsV4 && name === 'vaulttransactioncreate';
+    const isV4 = ix.programId === PROGRAMS.squadsV4 && V4_TRANSACTION_CREATES.has(name);
     const isV3 = ix.programId === PROGRAMS.squadsV3 && name === 'addinstruction';
     if (!isV4 && !isV3) return null;
 

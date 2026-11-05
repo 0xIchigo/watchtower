@@ -1,5 +1,7 @@
-import { address, getAddressDecoder, getAddressEncoder, getProgramDerivedAddress } from '@solana/kit';
+import { address, getAddressDecoder, getAddressEncoder, getBase58Encoder, getProgramDerivedAddress } from '@solana/kit';
 import { PROGRAMS } from '../constants.js';
+import type { ParsedTx } from '../model.js';
+import type { StateStore } from '../state.js';
 
 /** Anchor discriminators: sha256("account:Multisig")[..8] (v4) and sha256("account:Ms")[..8] (v3). */
 const V4_MULTISIG_DISCRIMINATOR = 'e07479ba44a14fec';
@@ -148,6 +150,61 @@ export function decodeV4TransactionMessage(bytes: Uint8Array): ProposedInstructi
         const data = r.bytes(r.u16());
         return { programId: keyAt(programIdIndex) ?? 'unknown', accounts: accountIndexes.map(keyAt), data };
     });
+}
+
+/**
+ * Anchor discriminators (sha256("global:<name>")[..8]) of the Squads v4 transaction-buffer instructions, which the IDL
+ * Parsed Events holds does not include, so they arrive undecoded with `rawData` and `rawAccounts`.
+ */
+const BUFFER_CREATE = 'f5c9716c253f1d59';
+const BUFFER_EXTEND = 'e69d433805eef592';
+const CREATE_FROM_BUFFER = 'de36954457f630e7';
+
+/** `vaultTransactionCreateFromBuffer` accounts by position: `VaultTransactionCreate`'s, then the buffer and creator. */
+const FROM_BUFFER_ACCOUNTS = ['multisig', 'transaction', 'creator', 'rent_payer', 'system_program', 'transaction_buffer', 'creator'];
+const FROM_BUFFER_SIGNERS = new Set(['creator', 'rent_payer']);
+
+/**
+ * Decodes the transaction-buffer instructions in `tx` in place. A buffer is written by `transactionBufferCreate`
+ * (args: buffer_index u8, vault_index u8, final_buffer_hash [u8; 32], final_buffer_size u16, buffer Vec<u8>) and
+ * `transactionBufferExtend` (buffer Vec<u8>), then `vaultTransactionCreateFromBuffer` turns it into a proposal. That
+ * instruction is renamed and given decoded accounts and a `transaction_message` arg, so it reads like
+ * `vaultTransactionCreate`; the message is left out when the buffer was not seen in full.
+ */
+export function decodeTransactionBuffers(tx: ParsedTx, state: StateStore): void {
+    for (const ix of tx.instructions) {
+        if (ix.programId !== PROGRAMS.squadsV4 || ix.instructionName !== null || !ix.rawData || !ix.rawAccounts) continue;
+        const data = Uint8Array.from(getBase58Encoder().encode(ix.rawData));
+        const discriminator = Buffer.from(data.subarray(0, 8)).toString('hex');
+        const id = `${tx.signature}:${ix.instructionIndex}.${ix.innerInstructionIndex ?? ''}`;
+        const r = new Reader(data, 8);
+        if (discriminator === BUFFER_CREATE && ix.rawAccounts[1]) {
+            r.skip(2); // buffer_index, vault_index
+            const finalHash = Buffer.from(r.bytes(32)).toString('hex');
+            const finalSize = r.u16();
+            state.startTransactionBuffer(ix.rawAccounts[1], id, finalHash, finalSize, r.bytes(r.u32()));
+        } else if (discriminator === BUFFER_EXTEND && ix.rawAccounts[1]) {
+            state.extendTransactionBuffer(ix.rawAccounts[1], id, r.bytes(r.u32()));
+        } else if (discriminator === CREATE_FROM_BUFFER && ix.rawAccounts.length >= FROM_BUFFER_ACCOUNTS.length) {
+            const vaultIndex = r.u8();
+            const ephemeralSigners = r.u8();
+            const message = state.transactionBuffer(ix.rawAccounts[5]!);
+            ix.instructionName = 'vault_transaction_create_from_buffer';
+            ix.accounts = FROM_BUFFER_ACCOUNTS.map((name, i) => ({
+                name,
+                pubkey: ix.rawAccounts![i]!,
+                isSigner: FROM_BUFFER_SIGNERS.has(name),
+                isWritable: name !== 'system_program',
+            }));
+            ix.args = {
+                args: {
+                    vault_index: vaultIndex,
+                    ephemeral_signers: ephemeralSigners,
+                    ...(message ? { transaction_message: Buffer.from(message).toString('base64') } : {}),
+                },
+            };
+        }
+    }
 }
 
 class Reader {

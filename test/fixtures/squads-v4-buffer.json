@@ -1,0 +1,217 @@
+[
+ {
+  "signature": "4YxSiatDZjbbRP3EUXfWYbRVHEKNe1EAwhFiSsUnq8au3xcZapxiPH8AxNb98asWufKgYgEmqTyGyWXYk22qogXn",
+  "parserStatus": "OK",
+  "parsed": {
+   "slot": 465764487,
+   "blockTime": 1793894305,
+   "fee": 7030,
+   "feePayer": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+   "transactionStatus": "OK",
+   "error": null,
+   "decodedError": null,
+   "nativeTransfers": [],
+   "tokenTransfers": [],
+   "summary": {
+    "type": "create_account",
+    "description": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi created account CcotCTE8Uc2Dw8DqC7kVvUwRMkBFccuzcUN1wNvVwEi8 with 0.00931164 SOL",
+    "parsedData": null
+   },
+   "instructions": [
+    {
+     "instructionIndex": 1,
+     "innerInstructionIndex": null,
+     "stackHeight": 1,
+     "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+     "rawAccounts": [
+      "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+      "CcotCTE8Uc2Dw8DqC7kVvUwRMkBFccuzcUN1wNvVwEi8",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "11111111111111111111111111111111"
+     ],
+     "rawData": "4MxifP7qeWLiF8bNgoUCHNEN5h4y3bxXpos3XggBXkdt1ZbZxkgTmv6LHv9TnVYycyUSCJ3HW7PXHk7FDvMvr2mQSrz5midnygSB1yqSxfK7Jidf6GjfkmHmU8RZmXF9AG6mEYTC4mwSFvQ8xznApcaJ4WUdEzFuftrkmMvzipedjA4Q3EkDwwgYgcFfCiFUJDu7Gk8qLyRStoTEYSyg52mGNLVPiBtHuWZQAMAPV4C5AKkma7r1aLrRiNCGu3kHJ4aFWRwW67AkL1ooguXkCRcCj3Fz3NLR9oNCAdTqo6ycaT9ahuEZrA1wjU3qUsoKj5DUgTQcm5aNJTGGsa2SB5G6gvdDbG1c6KaHLbh2oC9iLHbZcPgdyhHxzNw5CLqmTjXvFKXZHNfgndD1pkFDzNLJquobGZ73cynkAZ3dwW2Loe8ebUVdDzCFgPsZG1A2KC5gY29C7S1y4nAwstWzYFHcm1AvaJ8vAHmkaMncJERVKH6kXq8CY5nByWBqQvtPGeUE6kE2JRCUuFQijxmYGRX99v7hpbBE6DitETztLb4vHTenDKVVbqyoZ9M4mmp5FCH9CCQQdsRM7EfFjybzZgoHNXyRQBcMsbH9MnVecdcW4qXiePkT3iYVEp7wD3veZeDXSTKPfEcSeteHHgGX974UsSoSKrZ16eKmdbLg2KcUw6jka2r6UvbjezgSYAkyqMptgZCGA9CQzKgBzJiGnKKooz6jyNyS3mSt8rGDask7b8wEpvUS9FKAVQ32iZbTc9eeNvC3wxvv4tTRXHqQFroGG1ttjVBu33uBAqt6WikAZ1EfnGozWurTVp9W5Y5vY3ivryx8hSbEiLKUnMdDhQx8LxAzS7Qswxd9XzLgRG6NeT2FcJPwVx1qy2V5oEzPVfKXPkZkv4YoyKRti7pomZGpeXZ2PDU1MyS7auw5gxXcPKwSGYBWkk84iZK1dR8Aky3LuETHjrqzoaQ1sKuco48ghmRNqH9oT9pDWQTjRBYMsFifP16Mwk6ZgnHUFXT4bx3ESWkBA4CmeH188h5WSpaekk7bNYFmEw5bMjJ9ED2DypdUk7qV6fguenFDvjxcVykwzxK68Sg1hrCgxd1q82zxUtn1qiDh7jkiCzQX8HQV3BaW1yN9av4y8XBLZUpoaWnaSp1WjFrFp2xpNKLEXLNCJoD74Q45hoqrjBJrcoA83ucKi3D6PUyCcjyRW6ZK85a5xWwH56ZXmbDrmhjpFctbPXMzAyJXMEAwy",
+     "summary": null,
+     "programName": "squads_multisig_program",
+     "instructionName": null,
+     "decoded": null
+    }
+   ]
+  }
+ },
+ {
+  "signature": "2JFy352wjSed5zWLqUFSsr7PMxa4efRjtS1iWkHoFbwE8tQ78NYJcY4aCi3HNF6bTBvZhZfxRS6cPRJ47gW14CEw",
+  "parserStatus": "OK",
+  "parsed": {
+   "slot": 465764492,
+   "blockTime": 1793894306,
+   "fee": 7030,
+   "feePayer": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+   "transactionStatus": "OK",
+   "error": null,
+   "decodedError": null,
+   "nativeTransfers": [],
+   "tokenTransfers": [],
+   "summary": null,
+   "instructions": [
+    {
+     "instructionIndex": 1,
+     "innerInstructionIndex": null,
+     "stackHeight": 1,
+     "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+     "rawAccounts": [
+      "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+      "CcotCTE8Uc2Dw8DqC7kVvUwRMkBFccuzcUN1wNvVwEi8",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi"
+     ],
+     "rawData": "2VcESJdPTQ8UCk2nY4sAh85CCGLmfwrdsaUHiYy8BsyVqz7c8sF6BgteXwakKQiEWhRkXhgvKTFAMRNL2DS2xxtyinz8eb41673o2pbGeKYX75UnZAo747BaEFc9eG9utB941GTU8JuCzBQMWmHi63QqSHwg5fh8EjLj6xfZgfR9HwsKjsAf3pMqaD9PRYGeBL8iqxjwjHxdCxF7NVpQUeARmRjdABRJahVmKxCTWMKaEayHXbz5Y9XJ9JDM9VraAPQDY4qf55nemXRqBHydfnyPGLpcXHFcX23VEEr1eRtio7FAsGHJreu72M9ufNGeYGPWSSwda4AQryh4rw2dRsd9KBG2cvwuAijZtLtmcWEWSXojPHbA1fSQ3Kt3DnBJUk48irCm8Ub9NYSkQ3NLXcyZ531vNWrpUYy2ra63vEn6Qt9FjscbSLZh5Xx3Y4bmurkvEicLGh8uQavinfGyeGkrYi2yJQzuEFrzV3XGq7wME4Cbkqp8J3K558XQZiFi9ieDNnenXkPkhGDAN2w1gjmKMwTgSB8wjGHjJJTZuCecDGq7V3BYSn4Zqvg2tcmjqfbedG1VmnLY136e1t1EUyofYXfrCnUGgyPVg1Y9MJ9v3G2VwWUcMtBAv5sG28F6mMUHd7V7TU8Rgxw2cwzi6cM56MYuBkynYKj7J76mZnJNkXPqdxr1dT5dqGtQv11tHCsEVFH2jQoLT1bExEZykCAEwk4jDsiRj18mPW5d5uKHXRLGdc3fhXEfrMprmwyuBbnKWfeZAHMPUpnCTKZDpLKzrj4c4PYoy4ZSweCAer71fUKVCXxgZQTWi5NxC2E6CHHa8HLN8d6J6txm5eLprGmtyUapi8p6qCbAzjecQYNQRCDtRNMgue6n5zkrPhjgRqg7AC5JCKCt54rK3xWjCVEEh6MmLD4Zc5m6xXzTXDYJVi2QoXJN4g5yagPGKJQU95eu44fzqUf9Dng87MPvDC1cRvEAZQ3dvjc7G9HzZnEvij",
+     "summary": null,
+     "programName": "squads_multisig_program",
+     "instructionName": null,
+     "decoded": null
+    }
+   ]
+  }
+ },
+ {
+  "signature": "446T5kvf8ec8DxVpcfbXtHRukvyb8m3uUKJu8JPBxeqSGmcAgXLhG2SBh6dujc3gvyyEotzG8UbxX49ZPEnqTcCs",
+  "parserStatus": "OK",
+  "parsed": {
+   "slot": 465764510,
+   "blockTime": 1793894310,
+   "fee": 11030,
+   "feePayer": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+   "transactionStatus": "OK",
+   "error": null,
+   "decodedError": null,
+   "nativeTransfers": [],
+   "tokenTransfers": [],
+   "summary": {
+    "type": "transfer",
+    "description": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi transferred 0.00818896 SOL to AFnixFgNEu8uRjq2mcMz4EaHYrEkAGPWwKTMh6DPhhsc",
+    "parsedData": null
+   },
+   "instructions": [
+    {
+     "instructionIndex": 1,
+     "innerInstructionIndex": null,
+     "stackHeight": 1,
+     "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+     "rawAccounts": [
+      "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+      "AFnixFgNEu8uRjq2mcMz4EaHYrEkAGPWwKTMh6DPhhsc",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "11111111111111111111111111111111",
+      "CcotCTE8Uc2Dw8DqC7kVvUwRMkBFccuzcUN1wNvVwEi8",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi"
+     ],
+     "rawData": "EfXVWUyy3t4Vs6dKAf8x7yi3EaUMu",
+     "summary": null,
+     "programName": "squads_multisig_program",
+     "instructionName": null,
+     "decoded": null
+    },
+    {
+     "instructionIndex": 2,
+     "innerInstructionIndex": null,
+     "stackHeight": 1,
+     "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+     "rawAccounts": [
+      "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+      "9e45JQ9GenzjhFZPtoLqWXvBouUaW8QnCn3Jbrg2ZrFQ",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "11111111111111111111111111111111"
+     ],
+     "rawData": "3535YithDR663RNXbpp3k3HZ",
+     "summary": null,
+     "programName": "squads_multisig_program",
+     "instructionName": "proposal_create",
+     "decoded": {
+      "args": {
+       "args": {
+        "draft": false,
+        "transaction_index": "429552"
+       }
+      },
+      "accounts": [
+       {
+        "name": "multisig",
+        "pubkey": "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+        "isSigner": false,
+        "isWritable": false
+       },
+       {
+        "name": "proposal",
+        "pubkey": "9e45JQ9GenzjhFZPtoLqWXvBouUaW8QnCn3Jbrg2ZrFQ",
+        "isSigner": false,
+        "isWritable": true
+       },
+       {
+        "name": "creator",
+        "pubkey": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+        "isSigner": true,
+        "isWritable": false
+       },
+       {
+        "name": "rent_payer",
+        "pubkey": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+        "isSigner": true,
+        "isWritable": true
+       },
+       {
+        "name": "system_program",
+        "pubkey": "11111111111111111111111111111111",
+        "isSigner": false,
+        "isWritable": false
+       }
+      ]
+     }
+    },
+    {
+     "instructionIndex": 3,
+     "innerInstructionIndex": null,
+     "stackHeight": 1,
+     "programId": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+     "rawAccounts": [
+      "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+      "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+      "9e45JQ9GenzjhFZPtoLqWXvBouUaW8QnCn3Jbrg2ZrFQ"
+     ],
+     "rawData": "2qRHAEUKPa4CF",
+     "summary": null,
+     "programName": "squads_multisig_program",
+     "instructionName": "proposal_approve",
+     "decoded": {
+      "args": {
+       "args": {
+        "memo": null
+       }
+      },
+      "accounts": [
+       {
+        "name": "multisig",
+        "pubkey": "2ZDFsDzcztw6fRgpvRECytSDTnWtJbUDiVqck7CJS1oi",
+        "isSigner": false,
+        "isWritable": false
+       },
+       {
+        "name": "member",
+        "pubkey": "cc3novbXuNSe292qKH2gGhxToaWjuBvJbA7zQf8NVxi",
+        "isSigner": true,
+        "isWritable": true
+       },
+       {
+        "name": "proposal",
+        "pubkey": "9e45JQ9GenzjhFZPtoLqWXvBouUaW8QnCn3Jbrg2ZrFQ",
+        "isSigner": false,
+        "isWritable": true
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+]

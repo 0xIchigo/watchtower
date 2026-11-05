@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { Severity } from './config.js';
@@ -17,6 +18,14 @@ interface ProposedChange {
     title: string;
     signature: string;
     slot: number;
+}
+
+interface TransactionBuffer {
+    /** Hex SHA-256 and byte length Squads checks the finished buffer against. */
+    finalHash: string;
+    finalSize: number;
+    /** Base64 chunks in write order, keyed by the instruction that wrote them, so a replayed transaction adds nothing. */
+    chunks: { id: string; data: string }[];
 }
 
 interface ProposalRecord {
@@ -65,6 +74,8 @@ interface StateFile {
     adminKeys: Record<string, Record<string, string>>;
     /** Keyed by the Squads transaction and proposal accounts later instructions reference. */
     proposals: Record<string, ProposalRecord>;
+    /** Squads v4 transaction buffers being written, keyed by buffer account; reused buffers start over on create. */
+    transactionBuffers: Record<string, TransactionBuffer>;
     /** Recent attack-stage findings per protocol group. */
     chainSignals: Record<string, ChainSignal[]>;
     /** Recent outflow assets per treasury. */
@@ -78,6 +89,7 @@ const MAX_FINDINGS = 5_000;
 const MAX_PENDING_CONFIG_TRANSACTIONS = 500;
 const MAX_PROPOSED_CHANGES = 500;
 const MAX_PROPOSALS = 1_000;
+const MAX_TRANSACTION_BUFFERS = 200;
 
 export class StateStore {
     readonly #path: string;
@@ -149,6 +161,31 @@ export class StateStore {
 
     configTransaction(transaction: string): PendingConfigTransaction | undefined {
         return this.#state.pendingConfigTransactions[transaction];
+    }
+
+    /** Starts or restarts the buffer at `address` with its first chunk; `id` identifies the writing instruction. */
+    startTransactionBuffer(address: string, id: string, finalHash: string, finalSize: number, chunk: Uint8Array): void {
+        if (this.#state.transactionBuffers[address]?.chunks[0]?.id === id) return;
+        delete this.#state.transactionBuffers[address];
+        this.#state.transactionBuffers[address] = { finalHash, finalSize, chunks: [{ id, data: Buffer.from(chunk).toString('base64') }] };
+        dropOldest(this.#state.transactionBuffers, MAX_TRANSACTION_BUFFERS);
+        this.#dirty = true;
+    }
+
+    extendTransactionBuffer(address: string, id: string, chunk: Uint8Array): void {
+        const buffer = this.#state.transactionBuffers[address];
+        if (!buffer || buffer.chunks.some((c) => c.id === id)) return;
+        buffer.chunks.push({ id, data: Buffer.from(chunk).toString('base64') });
+        this.#dirty = true;
+    }
+
+    /** The finished buffer at `address`, or `null` unless it matches the hash and size Squads will check. */
+    transactionBuffer(address: string): Uint8Array | null {
+        const buffer = this.#state.transactionBuffers[address];
+        if (!buffer) return null;
+        const bytes = Buffer.concat(buffer.chunks.map((c) => Buffer.from(c.data, 'base64')));
+        const matches = bytes.length === buffer.finalSize && createHash('sha256').update(bytes).digest('hex') === buffer.finalHash;
+        return matches ? bytes : null;
     }
 
     rememberProposedChange(keys: string[], change: ProposedChange): void {
@@ -303,6 +340,7 @@ function emptyState(): StateFile {
         idlVersions: {},
         adminKeys: {},
         proposals: {},
+        transactionBuffers: {},
         chainSignals: {},
         sweeps: {},
         configReads: {},

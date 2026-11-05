@@ -63,6 +63,7 @@ Run `pnpm check` before handing work back.
 - Read decoded accounts with `account(ix, role)` and args with `arg(ix, ...keys)`. Both tolerate snake_case and camelCase.
 - u64 args arrive as strings. Use `BigInt`, never `Number`, for amounts.
 - Read public-key args with `pubkeyArg`. parser-v2's native decoders split a bare `Pubkey` tuple payload (for example `initialize_nonce_account`) into byte fields: the named field holds byte 0 and `field_2`..`field_32` hold the rest. `pubkeyArg` reassembles that and unwraps `COption`.
+- Squads v4 transaction-buffer instructions (`transactionBufferCreate`, `transactionBufferExtend`, `vaultTransactionCreateFromBuffer`) are missing from the IDL Parsed Events holds, so they arrive undecoded with `rawData`. `decodeTransactionBuffers` in `src/discover/squads.ts` runs before the detectors: it stores buffer chunks in state and rewrites `vaultTransactionCreateFromBuffer` to read like `vaultTransactionCreate`, attaching the message only when it matches the buffer's final hash and size.
 - Squads and other Anchor args decode in snake_case (`transaction_message`, `new_time_lock`). `arg` and `field` try camelCase then snake_case.
 - Convert time to slots with the measured `runtime.slotMs`, never a fixed 400 ms.
 - Look up rule tables with `Map`s, not plain objects, so instruction names from arbitrary IDLs can't hit prototype keys.

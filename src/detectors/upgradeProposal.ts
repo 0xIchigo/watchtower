@@ -133,9 +133,12 @@ function proposalFindings(
     return findings;
 }
 
+/** Squads v4 instructions that create a vault transaction: directly, or from a transaction buffer (`decodeTransactionBuffers`). */
+export const V4_TRANSACTION_CREATES = new Set(['vaulttransactioncreate', 'vaulttransactioncreatefrombuffer']);
+
 /** v4 `vaultTransactionCreate` carries the whole proposed message; v3 adds instructions one at a time. */
 export function proposedInstructions(ix: ParsedInstruction, name: string): ProposedInstruction[] | null {
-    if (ix.programId === PROGRAMS.squadsV4 && name === 'vaulttransactioncreate') {
+    if (ix.programId === PROGRAMS.squadsV4 && V4_TRANSACTION_CREATES.has(name)) {
         const message = field(arg(ix, 'args'), 'transactionMessage');
         if (typeof message !== 'string') return null;
         try {
