@@ -50,7 +50,7 @@ vi.mock('../src/runtime.js', () => ({
         return {
             ctx,
             state: ctx.state,
-            engine: { flushPendingAlerts: async () => 0, idle: async () => undefined, process: async () => [] },
+            engine: { flushPendingAlerts: async () => 0, close: async () => undefined, process: async () => [] },
             rpc: { getSlot: async () => 1_000 },
             discovery: { programs: [] },
             plans: [],

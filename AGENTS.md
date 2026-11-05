@@ -77,6 +77,7 @@ Run `pnpm check` before handing work back.
   - `queue` from `report`.
   - `send` from `watch`.
   - Undelivered alerts persist in state until every sink accepts them.
+  - Grouping happens only at delivery: repeats of a non-critical alert (`groupKey`: detector, subject, title) within `alerts.groupWindowSeconds` are sent as one summary, and every finding is still recorded on its own. Never group or delay critical alerts. Stop with `engine.close()` so held repeats are sent.
 - Cursors only move past scanned slots. A budget-limited scan resumes at the start of the slot it stopped in. Never advance a cursor from the stream unless that plan's gap-fill reached the present on the current connection (`caughtUp` in `src/backfill.ts`: `complete`, or a budget-limited first scan, `recent-only`).
 - Styling follows the Helius design system (Orb, dev portal): Inter and IBM Plex Mono, brand orange `#E84326` used sparingly, neutral surfaces, dark and light themes.
 - `assets/brand/` holds byte-for-byte copies of the official Helius brand kit (helius.dev `/Helius-Brandkit`). Never edit, recolor or redraw them. The Helius logo appears only as "Powered by Helius", never as Watchtower's own mark.

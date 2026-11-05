@@ -57,6 +57,7 @@ export async function createRuntime(config: Config, options: RuntimeOptions = {}
         createSinks(config.alerts.sinks, config.alerts.minSeverity),
         onRecord,
         createEnricher(rpc, events, (id) => ctx.targets.programs.get(id)?.programData ?? null),
+        config.alerts.groupWindowSeconds * 1000,
     );
     return { config, rpc, events, state, discovery, ctx, engine, plans: scanPlans(config, targets), slotMs };
 }

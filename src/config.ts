@@ -72,6 +72,8 @@ const configSchema = z.object({
         .object({
             minSeverity: severity.default('low'),
             sinks: z.array(sinkSchema).default([{ type: 'console' }]),
+            /** Repeats of a non-critical alert within this long of the first are sent as one summary; 0 sends each. */
+            groupWindowSeconds: z.number().int().nonnegative().default(600),
         })
         .prefault({}),
     backfill: z

@@ -106,7 +106,7 @@ export class Monitor extends EventEmitter<MonitorEvents> {
         this.#client?.stop();
         await this.#catchUp?.catch(() => undefined);
         await this.#queue;
-        await this.#runtime?.engine.idle();
+        await this.#runtime?.engine.close();
         this.#runtime?.state.save();
         this.#setStatus({ phase: 'stopped', connectedSince: null });
     }

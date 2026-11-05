@@ -64,7 +64,7 @@ export async function replayCommand(options: ReplayOptions): Promise<void> {
         ? await adHocConfig(options.program, events, idlAtSlot, apiKey, endpoints)
         : loadConfig(options.config);
     config.stateFile = join(mkdtempSync(join(tmpdir(), 'watchtower-replay-')), 'state.json');
-    config.alerts = { minSeverity: 'critical', sinks: [] };
+    config.alerts = { minSeverity: 'critical', sinks: [], groupWindowSeconds: 0 };
 
     const spinner = p.spinner();
     spinner.start('Discovering authorities, multisigs and vaults as they are today');

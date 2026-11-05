@@ -53,6 +53,9 @@ configPollSeconds: 60
 alerts:
   # info | low | medium | high | critical
   minSeverity: low
+  # Repeats of the same alert (same detector, subject and title) within this many seconds of the first are sent
+  # as one summary when the window closes. Critical alerts are always sent on their own. 0 sends every alert.
+  groupWindowSeconds: 600
   sinks:
     - type: console
     # - type: discord
