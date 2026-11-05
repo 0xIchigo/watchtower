@@ -6,3 +6,5 @@ watchtower.yaml
 reports/
 *.log
 monitors/
+.claude/
+launch/
