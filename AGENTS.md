@@ -85,7 +85,7 @@ Run `pnpm check` before handing work back.
 
 - Parsed Streams: `parsedTransactionSubscribe`. Max 10 programs, 50 instruction names, 100 included accounts and 20 roles per filter, and 25 subscriptions per connection. Only `confirmed` commitment. No replay or resume.
 - Parsed Events scan: max 20 programs per `match`, 50 instructions and 50 discriminators per program, 10,000 transactions scanned per request. Follow `paginationToken` until it is absent.
-- Call Helius only through the SDK client from `src/helius/sdk.ts`, and use the SDK's request and response types rather than redeclaring them. The one exception is the Parsed Events IDL endpoints (`/v1/parsed-events/idl/...`), which the SDK does not cover yet.
+- Call Helius only through the SDK client from `src/helius/sdk.ts`, and use the SDK's request and response types rather than redeclaring them. The one exception is the Parsed Events IDL endpoints (`/v1/parsed-events/idl/...`), which the SDK does not cover yet. A stored IDL with instructions but no account types gets its account layouts from the program's on-chain Anchor IDL account (`fetchIdl` in `src/discover/index.ts`), read through RPC.
 - The SDK's `.d.ts` files use extensionless relative imports, which `moduleResolution: "NodeNext"` cannot resolve: the whole client type silently becomes `any`. Keep `"moduleResolution": "Bundler"` and explicit `.js` extensions in our own imports.
 - `@solana/kit` stays on the SDK's peer range (`^6.9.0`).
 - `HELIUS_RPC_URL` and `HELIUS_PARSED_STREAMS_URL` override the SDK's hosts; Parsed Events always uses the SDK's.

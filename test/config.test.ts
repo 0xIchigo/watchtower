@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs';
+import { deflateSync } from 'node:zlib';
 import { address, getAddressEncoder } from '@solana/kit';
 import { describe, expect, it } from 'vitest';
 import { checkConfigChanges } from '../src/configWatch.js';
 import type { ParsedTransactionResult } from 'helius-sdk/parsedEvents/types';
 import { namesType, summarizeIdl, type ConfigLayout } from '../src/discover/idl.js';
-import { decodeConfig, discoverConfigAccounts, type ConfigAccount } from '../src/discover/index.js';
+import { decodeConfig, discoverConfigAccounts, fetchIdl, type ConfigAccount } from '../src/discover/index.js';
 import { Engine } from '../src/engine.js';
 import type { ParsedEventsClient } from '../src/helius/parsedEvents.js';
 import type { RpcClient } from '../src/helius/rpc.js';
@@ -116,6 +117,45 @@ describe('config account layouts', () => {
         const { accounts } = await discoverConfigAccounts(rpc, sampledEvents([]), PUMP_AMM, pump);
         expect(requested).toEqual([[PUMP_AMM_GLOBAL_CONFIG]]);
         expect(accounts).toMatchObject([{ address: PUMP_AMM_GLOBAL_CONFIG, values: { admin: ADMIN } }]);
+    });
+
+    describe('when the stored IDL has instructions only', () => {
+        const DRIFT = 'dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH';
+        /** Drift's Anchor IDL account on mainnet. */
+        const DRIFT_IDL_ACCOUNT = '8BKPjRu7Hvd6Y2J67EdLx9MsrZFQwEMVwYg7NeVbAPF8';
+        /** Drift's `State` and the types it uses, trimmed from its on-chain IDL (v2.150.0). */
+        const onChain = readFileSync(new URL('./fixtures/idl-drift-onchain.json', import.meta.url));
+        const idlAccountData = (json: Buffer) => {
+            const compressed = deflateSync(json);
+            const header = Buffer.alloc(44);
+            header.writeUInt32LE(compressed.length, 40);
+            return Buffer.concat([header, compressed]);
+        };
+        const events = {
+            listIdlVersions: async () => [{ slot: 100 }],
+            getIdl: async () => ({
+                instructions: [{ name: 'update_admin', accounts: [{ name: 'admin', signer: true }, { name: 'state' }] }],
+            }),
+        } as unknown as ParsedEventsClient;
+        const rpcWith = (owner: string) =>
+            ({
+                getAccountInfo: async (account: string) =>
+                    account === DRIFT_IDL_ACCOUNT ? { owner, lamports: 1, executable: false, data: idlAccountData(onChain) } : null,
+            }) as unknown as RpcClient;
+
+        it('reads account layouts from the program’s on-chain Anchor IDL', async () => {
+            const summary = await fetchIdl(events, DRIFT, undefined, rpcWith(DRIFT));
+            expect(summary!.privileged).toEqual(['update_admin']);
+            expect(summary!.configLayouts.find((l) => l.account === 'State')!.fields.find((f) => f.admin)).toMatchObject({
+                name: 'admin',
+                offset: 8,
+            });
+        });
+
+        it('ignores an IDL account the program does not own', async () => {
+            const summary = await fetchIdl(events, DRIFT, undefined, rpcWith(KEYS.attacker));
+            expect(summary!.configLayouts).toEqual([]);
+        });
     });
 
     it('matches an account or field name to the type it refers to', () => {

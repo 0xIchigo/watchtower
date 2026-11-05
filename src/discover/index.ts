@@ -1,4 +1,5 @@
-import { address, getAddressDecoder, getProgramDerivedAddress, isOffCurveAddress } from '@solana/kit';
+import { inflateSync } from 'node:zlib';
+import { address, createAddressWithSeed, getAddressDecoder, getProgramDerivedAddress, isOffCurveAddress } from '@solana/kit';
 import { PROGRAMS, SQUADS_PROGRAMS } from '../constants.js';
 import type { ParsedEventsClient } from '../helius/parsedEvents.js';
 import type { FungibleHolding, RpcClient } from '../helius/rpc.js';
@@ -87,7 +88,7 @@ export async function discoverProgram(
 
     const [multisig, idl, build] = await Promise.all([
         upgradeAuthority ? findGoverningMultisig(rpc, events, upgradeAuthority) : null,
-        fetchIdl(events, programId, idlAtSlot),
+        fetchIdl(events, programId, idlAtSlot, rpc),
         checkBuild(rpc, programId, programData).catch((error: Error) => {
             console.warn(`Failed to check the verified build of ${programId}: ${error.message}`);
             return null;
@@ -515,15 +516,44 @@ async function findGoverningMultisig(
     return null;
 }
 
-export async function fetchIdl(events: ParsedEventsClient, programId: string, atSlot?: number): Promise<IdlSummary | null> {
+/**
+ * The program's IDL from Parsed Events. Some stored IDLs carry instructions only; for those, account layouts come from
+ * the program's on-chain Anchor IDL when `rpc` is given.
+ */
+export async function fetchIdl(
+    events: ParsedEventsClient,
+    programId: string,
+    atSlot?: number,
+    rpc?: RpcClient,
+): Promise<IdlSummary | null> {
     try {
         const versions = await events.listIdlVersions(programId);
         const version = atSlot === undefined ? versions.at(-1) : versions.filter((v) => v.slot <= atSlot).at(-1);
-        return version ? summarizeIdl(await events.getIdl(programId, version.slot)) : null;
+        if (!version) return null;
+        const idl = (await events.getIdl(programId, version.slot)) as { accounts?: unknown[] } | null;
+        if (!rpc || (idl?.accounts?.length ?? 0) > 0) return summarizeIdl(idl);
+        const onChain = await onChainAnchorIdl(rpc, programId).catch((error: Error) => {
+            console.warn(`Failed to read the on-chain IDL of ${programId}: ${error.message}`);
+            return null;
+        });
+        return summarizeIdl(onChain ? { ...idl, accounts: onChain.accounts, types: onChain.types } : idl);
     } catch (error) {
         console.warn(`Failed to load the IDL for ${programId}: ${(error as Error).message}`);
         return null;
     }
+}
+
+/**
+ * Anchor's IDL account, at `createWithSeed(PDA(program, []), "anchor:idl", program)` and owned by the program:
+ * an 8-byte discriminator, the 32-byte authority, a u32 length, then that many bytes of zlib-compressed JSON.
+ */
+async function onChainAnchorIdl(rpc: RpcClient, programId: string): Promise<{ accounts?: unknown[]; types?: unknown[] } | null> {
+    const [base] = await getProgramDerivedAddress({ programAddress: address(programId), seeds: [] });
+    const idlAddress = await createAddressWithSeed({ baseAddress: base, programAddress: address(programId), seed: 'anchor:idl' });
+    const account = await rpc.getAccountInfo(idlAddress);
+    if (!account || account.owner !== programId || account.data.length < 44) return null;
+    const length = readU32(account.data, 40);
+    return JSON.parse(inflateSync(account.data.subarray(44, 44 + length)).toString('utf8'));
 }
 
 function readAddress(data: Uint8Array, offset: number): string {
