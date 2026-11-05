@@ -109,7 +109,7 @@ Run `pnpm check` before handing work back.
 
 ## Replay
 
-`replay` uses on-chain state as it is today for discovery, but the IDL live at the window start. Keep it free of side effects: no sinks, a temporary state file, `silent` alert mode. The Drift exploit (2026-03-20 to 2026-04-02, `--no-program-scans`) is the reference case and should end with a `Possible attack in progress` finding at 2026-04-01 16:05 UTC.
+`replay` uses on-chain state as it is today for discovery, but the IDL live at the window start. Keep it free of side effects: no sinks, a temporary state file, `silent` alert mode. The Drift exploit (2026-03-20 to 2026-04-02, `--no-program-scans`) is the reference case and should end with a `Possible attack in progress` finding at 2026-04-01 16:05 UTC. `pnpm replay:drift` runs it against mainnet and checks for that alert (`scripts/check-drift-replay.mjs`); `.github/workflows/replay.yml` runs it nightly with the `HELIUS_API_KEY` repository secret and opens an issue when it fails. Run it before merging changes to detectors, discovery or the Parsed Events adapter. It costs about 35 credits.
 
 ## Adding a detector
 
