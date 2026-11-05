@@ -10,7 +10,7 @@ Everything the [dashboard](dashboard.md) does is also available from the command
 ## 2. Install, build and test
 
 ```sh
-git clone https://github.com/0xIchigo/watchtower
+git clone https://github.com/helius-labs/watchtower
 cd watchtower
 pnpm install
 pnpm check   # format, lint, typecheck, tests, build

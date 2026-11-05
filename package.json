@@ -13,16 +13,16 @@
     "multisig",
     "token-2022"
   ],
-  "homepage": "https://github.com/0xIchigo/watchtower#readme",
+  "homepage": "https://github.com/helius-labs/watchtower#readme",
   "bugs": {
-    "url": "https://github.com/0xIchigo/watchtower/issues"
+    "url": "https://github.com/helius-labs/watchtower/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/0xIchigo/watchtower.git"
+    "url": "git+https://github.com/helius-labs/watchtower.git"
   },
   "license": "MIT",
-  "author": "0xIchigo",
+  "author": "Helius Labs",
   "type": "module",
   "bin": {
     "watchtower": "dist/cli.js"

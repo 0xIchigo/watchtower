@@ -23,7 +23,7 @@ Every call goes through the [Helius TypeScript SDK](https://github.com/helius-la
 You need Node.js 22 or later, pnpm, and a Helius API key from [dashboard.helius.dev](https://dashboard.helius.dev) with access to Parsed Events and Parsed Streams.
 
 ```sh
-git clone https://github.com/0xIchigo/watchtower
+git clone https://github.com/helius-labs/watchtower
 cd watchtower
 pnpm install && pnpm build
 cp .env.example .env      # then set HELIUS_API_KEY in .env
