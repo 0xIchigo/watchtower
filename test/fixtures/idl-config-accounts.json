@@ -1,0 +1,615 @@
+{
+ "accounts": [
+  {
+   "name": "State",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "admin",
+      "type": "publicKey"
+     },
+     {
+      "name": "whitelistMint",
+      "type": "publicKey"
+     },
+     {
+      "name": "discountMint",
+      "type": "publicKey"
+     },
+     {
+      "name": "signer",
+      "type": "publicKey"
+     },
+     {
+      "name": "srmVault",
+      "type": "publicKey"
+     },
+     {
+      "name": "perpFeeStructure",
+      "type": {
+       "defined": "FeeStructure"
+      }
+     },
+     {
+      "name": "spotFeeStructure",
+      "type": {
+       "defined": "FeeStructure"
+      }
+     },
+     {
+      "name": "oracleGuardRails",
+      "type": {
+       "defined": "OracleGuardRails"
+      }
+     },
+     {
+      "name": "numberOfAuthorities",
+      "type": "u64"
+     },
+     {
+      "name": "numberOfSubAccounts",
+      "type": "u64"
+     },
+     {
+      "name": "lpCooldownTime",
+      "type": "u64"
+     },
+     {
+      "name": "liquidationMarginBufferRatio",
+      "type": "u32"
+     },
+     {
+      "name": "settlementDuration",
+      "type": "u16"
+     },
+     {
+      "name": "numberOfMarkets",
+      "type": "u16"
+     },
+     {
+      "name": "numberOfSpotMarkets",
+      "type": "u16"
+     },
+     {
+      "name": "signerNonce",
+      "type": "u8"
+     },
+     {
+      "name": "minPerpAuctionDuration",
+      "type": "u8"
+     },
+     {
+      "name": "defaultMarketOrderTimeInForce",
+      "type": "u8"
+     },
+     {
+      "name": "defaultSpotAuctionDuration",
+      "type": "u8"
+     },
+     {
+      "name": "exchangeStatus",
+      "type": "u8"
+     },
+     {
+      "name": "liquidationDuration",
+      "type": "u8"
+     },
+     {
+      "name": "initialPctToLiquidate",
+      "type": "u16"
+     },
+     {
+      "name": "maxNumberOfSubAccounts",
+      "type": "u16"
+     },
+     {
+      "name": "maxInitializeUserFee",
+      "type": "u16"
+     },
+     {
+      "name": "featureBitFlags",
+      "type": "u8"
+     },
+     {
+      "name": "lpPoolFeatureBitFlags",
+      "type": "u8"
+     },
+     {
+      "name": "padding",
+      "type": {
+       "array": [
+        "u8",
+        8
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "LendingMarket",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "version",
+      "type": "u64"
+     },
+     {
+      "name": "bumpSeed",
+      "type": "u64"
+     },
+     {
+      "name": "lendingMarketOwner",
+      "type": "publicKey"
+     },
+     {
+      "name": "lendingMarketOwnerCached",
+      "type": "publicKey"
+     },
+     {
+      "name": "quoteCurrency",
+      "type": {
+       "array": [
+        "u8",
+        32
+       ]
+      }
+     },
+     {
+      "name": "referralFeeBps",
+      "type": "u16"
+     },
+     {
+      "name": "emergencyMode",
+      "type": "u8"
+     },
+     {
+      "name": "autodeleverageEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "borrowDisabled",
+      "type": "u8"
+     },
+     {
+      "name": "priceRefreshTriggerToMaxAgePct",
+      "type": "u8"
+     },
+     {
+      "name": "liquidationMaxDebtCloseFactorPct",
+      "type": "u8"
+     },
+     {
+      "name": "insolvencyRiskUnhealthyLtvPct",
+      "type": "u8"
+     },
+     {
+      "name": "minFullLiquidationValueThreshold",
+      "type": "u64"
+     },
+     {
+      "name": "maxLiquidatableDebtMarketValueAtOnce",
+      "type": "u64"
+     },
+     {
+      "name": "reserved0",
+      "type": {
+       "array": [
+        "u8",
+        8
+       ]
+      }
+     },
+     {
+      "name": "globalAllowedBorrowValue",
+      "type": "u64"
+     },
+     {
+      "name": "emergencyCouncil",
+      "type": "publicKey"
+     },
+     {
+      "name": "reserved1",
+      "type": {
+       "array": [
+        "u8",
+        8
+       ]
+      }
+     },
+     {
+      "name": "elevationGroups",
+      "type": {
+       "array": [
+        {
+         "defined": "ElevationGroup"
+        },
+        32
+       ]
+      }
+     },
+     {
+      "name": "elevationGroupPadding",
+      "type": {
+       "array": [
+        "u64",
+        90
+       ]
+      }
+     },
+     {
+      "name": "minNetValueInObligationSf",
+      "type": "u128"
+     },
+     {
+      "name": "minValueSkipLiquidationLtvChecks",
+      "type": "u64"
+     },
+     {
+      "name": "name",
+      "type": {
+       "array": [
+        "u8",
+        32
+       ]
+      }
+     },
+     {
+      "name": "minValueSkipLiquidationBfChecks",
+      "type": "u64"
+     },
+     {
+      "name": "individualAutodeleverageMarginCallPeriodSecs",
+      "type": "u64"
+     },
+     {
+      "name": "minInitialDepositAmount",
+      "type": "u64"
+     },
+     {
+      "name": "obligationOrderExecutionEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "immutable",
+      "type": "u8"
+     },
+     {
+      "name": "obligationOrderCreationEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "priceTriggeredLiquidationDisabled",
+      "type": "u8"
+     },
+     {
+      "name": "matureReserveDebtLiquidationEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "obligationBorrowDebtTermLiquidationEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "borrowOrderCreationEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "borrowOrderExecutionEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "proposerAuthority",
+      "type": "publicKey"
+     },
+     {
+      "name": "minBorrowOrderFillValue",
+      "type": "u64"
+     },
+     {
+      "name": "withdrawTicketIssuanceEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "withdrawTicketRedemptionEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "obligationBorrowRolloverConfigurationEnabled",
+      "type": "u8"
+     },
+     {
+      "name": "obligationBorrowMigrationToFixedExecutionEnabled",
+      "type": "u8"
+     }
+    ]
+   }
+  },
+  {
+   "name": "GlobalConfig",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "globalAdmin",
+      "type": "publicKey"
+     },
+     {
+      "name": "pendingAdmin",
+      "type": "publicKey"
+     },
+     {
+      "name": "feeCollector",
+      "type": "publicKey"
+     },
+     {
+      "name": "padding",
+      "type": {
+       "array": [
+        "u8",
+        928
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "UserState",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "userId",
+      "type": "u64"
+     },
+     {
+      "name": "farmState",
+      "type": "publicKey"
+     },
+     {
+      "name": "owner",
+      "type": "publicKey"
+     },
+     {
+      "name": "isFarmDelegated",
+      "type": "u8"
+     },
+     {
+      "name": "padding0",
+      "type": {
+       "array": [
+        "u8",
+        7
+       ]
+      }
+     },
+     {
+      "name": "rewardsTallyScaled",
+      "type": {
+       "array": [
+        "u128",
+        10
+       ]
+      }
+     },
+     {
+      "name": "rewardsIssuedUnclaimed",
+      "type": {
+       "array": [
+        "u64",
+        10
+       ]
+      }
+     },
+     {
+      "name": "lastClaimTs",
+      "type": {
+       "array": [
+        "u64",
+        10
+       ]
+      }
+     },
+     {
+      "name": "activeStakeScaled",
+      "type": "u128"
+     },
+     {
+      "name": "pendingDepositStakeScaled",
+      "type": "u128"
+     }
+    ]
+   }
+  }
+ ],
+ "types": [
+  {
+   "name": "OracleGuardRails",
+   "type": {
+    "fields": [
+     {
+      "name": "priceDivergence",
+      "type": {
+       "defined": "PriceDivergenceGuardRails"
+      }
+     },
+     {
+      "name": "validity",
+      "type": {
+       "defined": "ValidityGuardRails"
+      }
+     }
+    ],
+    "kind": "struct"
+   }
+  },
+  {
+   "name": "PriceDivergenceGuardRails",
+   "type": {
+    "fields": [
+     {
+      "name": "markOraclePercentDivergence",
+      "type": "u64"
+     },
+     {
+      "name": "oracleTwap5minPercentDivergence",
+      "type": "u64"
+     }
+    ],
+    "kind": "struct"
+   }
+  },
+  {
+   "name": "ValidityGuardRails",
+   "type": {
+    "fields": [
+     {
+      "name": "slotsBeforeStaleForAmm",
+      "type": "i64"
+     },
+     {
+      "name": "slotsBeforeStaleForMargin",
+      "type": "i64"
+     },
+     {
+      "name": "confidenceIntervalMaxSize",
+      "type": "u64"
+     },
+     {
+      "name": "tooVolatileRatio",
+      "type": "i64"
+     }
+    ],
+    "kind": "struct"
+   }
+  },
+  {
+   "name": "FeeStructure",
+   "type": {
+    "fields": [
+     {
+      "name": "feeTiers",
+      "type": {
+       "array": [
+        {
+         "defined": "FeeTier"
+        },
+        10
+       ]
+      }
+     },
+     {
+      "name": "fillerRewardStructure",
+      "type": {
+       "defined": "OrderFillerRewardStructure"
+      }
+     },
+     {
+      "name": "referrerRewardEpochUpperBound",
+      "type": "u64"
+     },
+     {
+      "name": "flatFillerFee",
+      "type": "u64"
+     }
+    ],
+    "kind": "struct"
+   }
+  },
+  {
+   "name": "FeeTier",
+   "type": {
+    "fields": [
+     {
+      "name": "feeNumerator",
+      "type": "u32"
+     },
+     {
+      "name": "feeDenominator",
+      "type": "u32"
+     },
+     {
+      "name": "makerRebateNumerator",
+      "type": "u32"
+     },
+     {
+      "name": "makerRebateDenominator",
+      "type": "u32"
+     },
+     {
+      "name": "referrerRewardNumerator",
+      "type": "u32"
+     },
+     {
+      "name": "referrerRewardDenominator",
+      "type": "u32"
+     },
+     {
+      "name": "refereeFeeNumerator",
+      "type": "u32"
+     },
+     {
+      "name": "refereeFeeDenominator",
+      "type": "u32"
+     }
+    ],
+    "kind": "struct"
+   }
+  },
+  {
+   "name": "OrderFillerRewardStructure",
+   "type": {
+    "fields": [
+     {
+      "name": "rewardNumerator",
+      "type": "u32"
+     },
+     {
+      "name": "rewardDenominator",
+      "type": "u32"
+     },
+     {
+      "name": "timeBasedRewardLowerBound",
+      "type": "u128"
+     }
+    ],
+    "kind": "struct"
+   }
+  },
+  {
+   "name": "ExchangeStatus",
+   "type": {
+    "kind": "enum",
+    "variants": [
+     {
+      "name": "DepositPaused"
+     },
+     {
+      "name": "WithdrawPaused"
+     },
+     {
+      "name": "AmmPaused"
+     },
+     {
+      "name": "FillPaused"
+     },
+     {
+      "name": "LiqPaused"
+     },
+     {
+      "name": "FundingPaused"
+     },
+     {
+      "name": "SettlePnlPaused"
+     },
+     {
+      "name": "AmmImmediateFillPaused"
+     }
+    ]
+   }
+  }
+ ]
+}

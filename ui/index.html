@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Watchtower</title>
+        <link rel="icon" type="image/svg+xml" href="/brand/helius-icon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="wrap topbar-inner">
+                <span class="wordmark">Watchtower</span>
+                <nav class="topnav" aria-label="Project">
+                    <a href="https://github.com/0xIchigo/watchtower#readme" target="_blank" rel="noopener">Docs</a>
+                    <a href="https://github.com/0xIchigo/watchtower" target="_blank" rel="noopener">GitHub</a>
+                </nav>
+            </div>
+        </header>
+        <main class="wrap page">
+            <nav id="monitor-tabs" class="monitor-tabs" aria-label="Monitors"></nav>
+            <div class="page-head">
+                <div>
+                    <h1 class="page-title">
+                        <span id="monitor-name">Watchtower</span>
+                        <span id="status" class="status-pill" data-phase="starting"
+                            ><span class="dot"></span><span id="status-text">Starting</span></span
+                        >
+                    </h1>
+                </div>
+                <div class="row">
+                    <span class="tooltip-anchor" id="monitor-control" hidden>
+                        <button type="button" class="btn" id="pause-button" aria-describedby="monitor-tooltip"></button>
+                        <span class="tooltip" id="monitor-tooltip" role="tooltip"></span>
+                    </span>
+                    <button type="button" class="btn btn-outline btn-danger-text" id="delete-button" hidden>Delete Monitor</button>
+                    <a class="btn btn-outline" id="report-link" href="/report.html" target="_blank" rel="noopener">Report</a>
+                </div>
+            </div>
+            <nav class="page-tabs" aria-label="Watchtower views">
+                <a class="page-tab" data-view="overview" href="#overview">Overview</a>
+                <a class="page-tab" data-view="activity" href="#activity">Activity</a>
+                <a class="page-tab" data-view="setup" href="#setup" id="setup-tab">Setup</a>
+            </nav>
+            <div id="offline" class="offline" hidden role="alert">
+                Lost connection to the Watchtower server. Is <code>watchtower serve</code> still running? Start it again with
+                <code>pnpm dev serve</code>; this page reconnects on its own.
+            </div>
+            <div id="view" class="view"></div>
+        </main>
+        <footer class="wrap site-footer">
+            <p>History from Helius Parsed Events, live alerts from Helius Parsed Streams.</p>
+            <a class="powered" href="https://www.helius.dev" target="_blank" rel="noopener"
+                ><span>Powered by</span><img src="/brand/helius.svg" alt="Helius" width="86" height="18"
+            /></a>
+        </footer>
+        <div id="toast" class="toast" hidden></div>
+        <script type="module" src="/app.js"></script>
+    </body>
+</html>

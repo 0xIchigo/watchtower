@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.watchtower/
+watchtower.yaml
+reports/
+*.log
+monitors/

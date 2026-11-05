@@ -1,0 +1,78 @@
+# Copy to watchtower.yaml, or run `watchtower init` to generate one.
+# Any string can reference an environment variable as ${NAME}; .env is loaded automatically.
+
+programs:
+  - id: JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4
+    name: Jupiter v6
+    # Instructions only an admin should call. Every call alerts; a signer not seen before escalates to high.
+    # Names follow the program's IDL; snake_case and camelCase both match.
+    privilegedInstructions: []
+    # Find the addresses that pay out this program's funds (priced with Helius DAS) and alert when
+    # 20% of a holding leaves at once. For programs that hold user funds (lending, perps); an
+    # aggregator's PDAs route funds on every swap, so leave it off for those.
+    watchVaults: false
+
+# Squads v3/v4 multisigs to watch. The multisig that holds each program's upgrade
+# authority is discovered automatically, so list only additional ones (treasury, admin).
+multisigs: []
+#  - address: <multisig address>
+#    label: Treasury multisig
+
+# SPL Token or Token-2022 mints: authority changes, large mints, transfer hook/fee/pause changes.
+mints: []
+#  - address: <mint address>
+#    label: MYTOKEN
+
+# Wallets or PDAs holding protocol funds. A single outflow at or above a threshold is high;
+# outflows adding up to 3x the threshold within windowMinutes are critical.
+# Thresholds are in UI units, keyed by mint address or SOL for native SOL.
+treasuries: []
+#  - address: <treasury address>
+#    label: Protocol treasury
+#    thresholds:
+#      SOL: 500
+#      EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: 250000   # USDC
+#    windowMinutes: 60
+#    alertOnAnyOutflow: false   # true also alerts (low) on every outflow, including unlisted tokens
+#    allowedDestinations: []    # when set, an outflow to any other address is high
+
+# Upgrade authorities, admin keys, multisig members, config authorities, mint/freeze authorities and
+# known admin signers are protected from durable-nonce setup automatically. List any other keys here.
+# Treasuries and watched keys are also protected from signing away control of their stake, token
+# or system accounts (stake authorize, token owner changes, delegates, System assign).
+watchedKeys: []
+#  - address: <ops wallet>
+#    label: Ops hot wallet
+
+# How often `watch` checks for a newly published IDL.
+idlPollMinutes: 10
+
+# How often config accounts (such as Drift's State) are read and compared. Admin calls also trigger a read.
+configPollSeconds: 60
+
+alerts:
+  # info | low | medium | high | critical
+  minSeverity: low
+  sinks:
+    - type: console
+    # - type: discord
+    #   url: ${DISCORD_WEBHOOK_URL}
+    #   minSeverity: medium
+    # - type: slack
+    #   url: ${SLACK_WEBHOOK_URL}
+    #   minSeverity: medium
+    # - type: telegram
+    #   botToken: ${TELEGRAM_BOT_TOKEN}
+    #   chatId: ${TELEGRAM_CHAT_ID}
+    # - type: webhook
+    #   url: https://example.com/watchtower
+    #   headers:
+    #     authorization: Bearer ${WEBHOOK_TOKEN}
+
+backfill:
+  # How far back the first `report` or `watch` looks.
+  lookbackDays: 90
+  # Per watched address, per run. Parsed Events scans up to 1000 transactions per page.
+  maxScannedTransactions: 50000
+
+stateFile: .watchtower/state.json

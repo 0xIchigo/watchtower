@@ -1,0 +1,420 @@
+{
+  "address": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+  "metadata": {
+    "description": "Created with Anchor",
+    "name": "pump_amm",
+    "spec": "0.1.0",
+    "version": "0.1.0"
+  },
+  "instructions": [
+    {
+      "accounts": [
+        {
+          "name": "admin",
+          "relations": [
+            "global_config"
+          ],
+          "signer": true,
+          "writable": true
+        },
+        {
+          "name": "global_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "start_time",
+          "type": "i64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        },
+        {
+          "name": "seconds_in_a_day",
+          "type": "i64"
+        },
+        {
+          "name": "day_number",
+          "type": "u64"
+        },
+        {
+          "name": "token_supply_per_day",
+          "type": "u64"
+        }
+      ],
+      "discriminator": [
+        209,
+        11,
+        115,
+        87,
+        213,
+        23,
+        124,
+        204
+      ],
+      "name": "admin_update_token_incentives"
+    },
+    {
+      "accounts": [
+        {
+          "name": "pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "account": "Pool",
+                "kind": "account",
+                "path": "pool.index"
+              },
+              {
+                "account": "Pool",
+                "kind": "account",
+                "path": "pool.creator"
+              },
+              {
+                "account": "Pool",
+                "kind": "account",
+                "path": "pool.base_mint"
+              },
+              {
+                "account": "Pool",
+                "kind": "account",
+                "path": "pool.quote_mint"
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "sharing_config",
+          "pda": {
+            "program": {
+              "kind": "const",
+              "value": [
+                12,
+                53,
+                255,
+                169,
+                5,
+                90,
+                142,
+                86,
+                141,
+                168,
+                247,
+                188,
+                7,
+                86,
+                21,
+                39,
+                76,
+                241,
+                201,
+                44,
+                164,
+                31,
+                64,
+                0,
+                156,
+                81,
+                106,
+                164,
+                20,
+                194,
+                124,
+                112
+              ]
+            },
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  104,
+                  97,
+                  114,
+                  105,
+                  110,
+                  103,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "account": "Pool",
+                "kind": "account",
+                "path": "pool.base_mint"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        208,
+        8,
+        159,
+        4,
+        74,
+        175,
+        16,
+        58
+      ],
+      "name": "migrate_pool_coin_creator"
+    }
+  ],
+  "accounts": [
+    {
+      "discriminator": [
+        149,
+        8,
+        156,
+        202,
+        160,
+        252,
+        176,
+        217
+      ],
+      "name": "GlobalConfig"
+    },
+    {
+      "discriminator": [
+        216,
+        74,
+        9,
+        0,
+        56,
+        140,
+        93,
+        75
+      ],
+      "name": "SharingConfig"
+    }
+  ],
+  "types": [
+    {
+      "name": "ConfigStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Paused"
+          },
+          {
+            "name": "Active"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalConfig",
+      "type": {
+        "fields": [
+          {
+            "docs": [
+              "The admin pubkey"
+            ],
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_fee_basis_points",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee_basis_points",
+            "type": "u64"
+          },
+          {
+            "docs": [
+              "Flags to disable certain functionality",
+              "bit 0 - Disable create pool",
+              "bit 1 - Disable deposit",
+              "bit 2 - Disable withdraw",
+              "bit 3 - Disable buy",
+              "bit 4 - Disable sell"
+            ],
+            "name": "disable_flags",
+            "type": "u8"
+          },
+          {
+            "docs": [
+              "Addresses of the protocol fee recipients"
+            ],
+            "name": "protocol_fee_recipients",
+            "type": {
+              "array": [
+                "pubkey",
+                8
+              ]
+            }
+          },
+          {
+            "name": "coin_creator_fee_basis_points",
+            "type": "u64"
+          },
+          {
+            "docs": [
+              "The admin authority for setting coin creators"
+            ],
+            "name": "admin_set_coin_creator_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "whitelist_pda",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved_fee_recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "mayhem_mode_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "reserved_fee_recipients",
+            "type": {
+              "array": [
+                "pubkey",
+                7
+              ]
+            }
+          },
+          {
+            "name": "is_cashback_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "buyback_fee_recipients",
+            "type": {
+              "array": [
+                "pubkey",
+                8
+              ]
+            }
+          },
+          {
+            "name": "buyback_basis_points",
+            "type": "u64"
+          },
+          {
+            "name": "boost_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "boost_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "creator_fee_configurable",
+            "type": "bool"
+          },
+          {
+            "name": "max_configurable_creator_fee_bps",
+            "type": "u64"
+          }
+        ],
+        "kind": "struct"
+      }
+    },
+    {
+      "name": "Shareholder",
+      "type": {
+        "fields": [
+          {
+            "name": "address",
+            "type": "pubkey"
+          },
+          {
+            "name": "share_bps",
+            "type": "u16"
+          }
+        ],
+        "kind": "struct"
+      }
+    },
+    {
+      "name": "SharingConfig",
+      "type": {
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ConfigStatus"
+              }
+            }
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin_revoked",
+            "type": "bool"
+          },
+          {
+            "name": "shareholders",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Shareholder"
+                }
+              }
+            }
+          }
+        ],
+        "kind": "struct"
+      }
+    }
+  ]
+}

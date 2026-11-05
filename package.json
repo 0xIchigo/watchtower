@@ -1,0 +1,74 @@
+{
+  "name": "helius-watchtower",
+  "version": "0.1.0",
+  "description": "Security monitoring for Solana programs: upgrades, admin and multisig takeovers, risky listings, treasury drains and durable-nonce setups, powered by Helius Parsed Events and Parsed Streams.",
+  "keywords": [
+    "solana",
+    "security",
+    "monitoring",
+    "helius",
+    "helius-sdk",
+    "parsed-events",
+    "squads",
+    "multisig",
+    "token-2022"
+  ],
+  "homepage": "https://github.com/0xIchigo/watchtower#readme",
+  "bugs": {
+    "url": "https://github.com/0xIchigo/watchtower/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xIchigo/watchtower.git"
+  },
+  "license": "MIT",
+  "author": "0xIchigo",
+  "type": "module",
+  "bin": {
+    "watchtower": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "assets",
+    "ui"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "oxlint --deny-warnings",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "prepublishOnly": "pnpm check"
+  },
+  "packageManager": "pnpm@10.26.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "@solana/kit": "^6.10.0",
+    "commander": "^15.0.0",
+    "helius-sdk": "^3.4.0",
+    "picocolors": "^1.1.1",
+    "ws": "^8.22.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/ws": "^8.18.2",
+    "oxlint": "^1.91.0",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}
