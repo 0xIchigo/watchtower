@@ -1,12 +1,12 @@
 name: Exploit replay
 
-# Replays the Drift exploit window against live Parsed Events every night and fails if Watchtower stops raising its
+# Replays the Drift exploit window against live Parsed Events every Monday and fails if Watchtower stops raising its
 # critical alerts on the new admin's first transaction. Catches regressions in Watchtower and changes in the APIs.
 # Needs a HELIUS_API_KEY repository secret; a run costs about 35 Parsed Events credits.
 
 on:
   schedule:
-    - cron: '17 6 * * *'
+    - cron: '17 6 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -45,12 +45,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          title="Nightly exploit replay is failing"
+          title="Weekly exploit replay is failing"
           existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --body "Still failing: $RUN_URL"
           else
-            gh issue create --title "$title" --body "The nightly Drift exploit replay failed: $RUN_URL
+            gh issue create --title "$title" --body "The weekly Drift exploit replay failed: $RUN_URL
 
           It replays 2026-03-20 to 2026-04-02 and expects the critical **Possible attack in progress** alert on the new admin's first transaction. A failure means detection regressed, the Parsed Events API changed, or the run could not reach Helius. Run \`pnpm replay:drift\` locally to reproduce."
           fi
