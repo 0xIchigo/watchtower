@@ -1,0 +1,18 @@
+# What Watchtower finds automatically
+
+You give Watchtower a program ID. It works out the rest from on-chain state, the program's IDL and its recent transactions.
+
+- **Upgrade authority:** read from the program's ProgramData account. If it is a Squads vault, the multisig is found through the vault's Parsed Events history and confirmed by re-deriving the vault address.
+- **Admin keys:** read from the program's config accounts through its IDL layout, such as Drift's `State.admin` or Kamino's `LendingMarket.lendingMarketOwner`, and from the signers of its recent admin calls in an admin role, so a permissionless crank does not count. A Squads multisig behind an admin key is watched like the upgrade multisig, and the [posture grade](grading.md) covers it. Each admin key's history is scanned for admin calls, which is far cheaper than scanning a busy program.
+- **Config accounts:** the accounts that store an admin key, found in order of cost:
+  - **Fixed address:** read directly when the IDL derives the account from constant seeds, such as Pump AMM's `GlobalConfig`.
+  - **Listed:** listed from the program when there are only a handful, such as Drift's `State` or Kamino's `GlobalConfig`.
+  - **Sampled:** otherwise taken from a sample of the program's recent transactions, keeping only the one or two accounts most of them use. That covers types with many instances, such as Kamino's 242 permissionless lending markets or Orca's Whirlpool configs, and programs too large to list. The sample counts accounts passed directly, and accounts named in another account's field, such as each pool's `whirlpools_config`.
+
+  Types the IDL derives per mint or per user are skipped. An account is kept only when its admin field holds a real admin, so integration configs that store another program's authority are skipped. When a config type cannot be found, or a program with admin instructions has no admin key, the dashboard log says so.
+
+- **Following control changes:** when an authority, admin key or multisig membership changes while monitoring, Watchtower discovers again within 10 seconds, starts watching the new admin or multisig, re-grades posture, and resubscribes the stream if its filters changed. No restart needed.
+- **Verified builds:** each program's deployed bytecode is hashed the way `solana-verify` does and checked against the OtterSec verification service (`verify.osec.io`, overridable with `WATCHTOWER_VERIFY_URL`).
+- **Token-2022 controls:** risky mint extensions are read from the mint account: a permanent delegate, transfer hook program or non-transferable flag (critical), pausable or frozen-by-default accounts (high), and transfer fees, close authority, interest or UI multipliers (medium). They count in a watched mint's posture and make a listing of such a token critical.
+- **New admin wallets:** an admin call signed by a wallet that first appeared on-chain less than 7 days earlier is critical. The admin wallet used in the Drift exploit was funded 25 hours before its first admin call.
+- **Vaults:** the program-derived addresses that pay out tokens in the program's recent transactions, kept when they hold at least $100,000, priced with the Helius DAS API. Each holding worth $10,000 or more gets a threshold of 20% of its balance, so 60% leaving within an hour is critical. Turn it on per program with `watchVaults: true` (or the Setup checkbox). It suits programs that hold user funds, such as lending and perps; an aggregator like Jupiter routes funds through its PDAs on every swap, which floods the stream and looks like outflows. A vault starts monitoring from the present rather than scanning its history, since that history is mostly user deposits and withdrawals.

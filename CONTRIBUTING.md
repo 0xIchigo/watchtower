@@ -24,7 +24,36 @@ The tests run offline and never spend API credits.
 
 ## Adding a detector
 
-[`README.md`](README.md#writing-a-detector) walks through it. If a detector targets a real exploit, a `watchtower replay` of the exploit window is the most convincing test.
+A detector is a pure function from a decoded transaction to findings:
+
+```ts
+import { account, nameOf } from '../model.js';
+import { findingFor, type Detector } from './types.js';
+
+export const oracleChange: Detector = {
+  id: 'oracle-change',
+  description: 'Oracle account swapped on a watched market',
+  detect(tx, ctx) {
+    return tx.instructions
+      .filter((ix) => ctx.targets.programs.has(ix.programId) && nameOf(ix) === 'updateoracle')
+      .map((ix) =>
+        findingFor('oracle-change', tx, ix, {
+          severity: 'high',
+          title: 'Oracle changed',
+          description: `Oracle set to ${account(ix, 'new_oracle')?.pubkey}`,
+          subject: ix.programId,
+          subjectLabel: ctx.targets.programs.get(ix.programId)!.label,
+          details: {},
+        }),
+      );
+  },
+};
+```
+
+1. Register it in [`src/detectors/index.ts`](src/detectors/index.ts).
+2. Add tests in [`test/detectors.test.ts`](test/detectors.test.ts) using the helpers in [`test/helpers.ts`](test/helpers.ts).
+
+If a detector targets a real exploit, a `watchtower replay` of the exploit window is the most convincing test. The existing detectors are listed in [`docs/detectors.md`](docs/detectors.md).
 
 ## Reporting bugs
 
