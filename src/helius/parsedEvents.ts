@@ -1,3 +1,4 @@
+import { CLIENT_ID } from '../constants.js';
 import type { HeliusClient } from 'helius-sdk';
 import type {
     GetParsedTransactionHistoryRequest,
@@ -81,6 +82,7 @@ export class ParsedEventsClient {
 
     async #getIdlEndpoint<T>(path: string): Promise<T> {
         const response = await fetch(`${IDL_BASE_URL}/${path}?api-key=${encodeURIComponent(this.#apiKey)}`, {
+            headers: { 'X-Helius-Client': CLIENT_ID },
             signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         });
         if (!response.ok) throw new Error(`Helius HTTP ${response.status}: ${(await response.text()).slice(0, 300)}`);
