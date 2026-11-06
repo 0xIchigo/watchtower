@@ -1,6 +1,6 @@
 # Watchtower
 
-<img width="3024" height="1186" alt="Watchtower dashboard showing a program's posture grade, findings and stream health" src="https://github.com/user-attachments/assets/39477516-36e2-4f41-b229-e6204698655a" />
+<img src="assets/dashboard.png" width="1440" alt="Watchtower dashboard: a live monitor with its security posture grade (C, 70/100), the programs, multisigs and keys it found, and findings by severity" />
 
 Security monitoring for Solana programs. Point it at a program ID and it will:
 
