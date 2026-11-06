@@ -19,7 +19,7 @@ export interface ScanProgress {
     scannedThrough?: { slot: number; blockTime: number | null };
 }
 
-/** Parsed Events IDL endpoints, which the Helius SDK does not cover. */
+/** Parsed Events IDL endpoints (https://www.helius.dev/docs/api-reference/parsed-events/idl), which the Helius SDK does not cover. */
 const IDL_BASE_URL = 'https://mainnet.helius-rpc.com/v1/parsed-events/idl';
 const MAX_SCAN_BUDGET_PER_REQUEST = 10_000;
 const REQUEST_TIMEOUT_MS = 60_000;

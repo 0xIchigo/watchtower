@@ -70,7 +70,7 @@ Discovery uses small, budgeted scans to work out what to watch ([`src/discover/i
 
 ## Parsed Events IDL endpoints: what a program can do, and when it changed
 
-`GET /v1/parsed-events/idl/{programId}` lists the IDL versions Parsed Events has used for a program, each with the slot it took effect; `/{programId}/{slot}` returns the IDL in force at that slot. The SDK doesn't wrap these yet, so [`ParsedEventsClient`](../src/helius/parsedEvents.ts) calls them directly.
+[`GET /v1/parsed-events/idl/{programId}`](https://www.helius.dev/docs/api-reference/parsed-events/idl-versions) lists the IDL versions Parsed Events has used for a program, each with the slot it took effect; [`/{programId}/{slot}`](https://www.helius.dev/docs/api-reference/parsed-events/idl) returns the IDL in force at that slot. The SDK doesn't wrap these yet, so [`ParsedEventsClient`](../src/helius/parsedEvents.ts) calls them directly.
 
 - **Finding admin instructions:** names and signer roles in the IDL pre-select likely admin-only instructions in Setup ([`src/discover/idl.ts`](../src/discover/idl.ts)).
 - **Reading config accounts:** the IDL's account layouts let Watchtower decode admin fields like `GlobalConfig.admin` and diff settings over time.
