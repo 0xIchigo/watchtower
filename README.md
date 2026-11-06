@@ -16,7 +16,7 @@ Watchtower is built on two Helius APIs:
 - **Parsed Events** decodes every instruction in a transaction, inner instructions included, into named args and accounts. Watchtower uses its `scan` endpoint to search an address's history server-side by program, instruction name and discriminator.
 - **Parsed Streams** delivers the same decoded transactions over a WebSocket as they confirm, filtered by program, instruction name and account.
 
-Every call goes through the [Helius TypeScript SDK](https://github.com/helius-labs/helius-sdk) (`helius-sdk`): Parsed Events, Parsed Streams, DAS, `getProgramAccountsV2` and standard Solana RPC. If you fork Watchtower, `src/helius/` shows how to use each one.
+Every call goes through the [Helius TypeScript SDK](https://github.com/helius-labs/helius-sdk) (`helius-sdk`): Parsed Events, Parsed Streams, DAS, `getProgramAccountsV2` and standard Solana RPC. [How Watchtower uses Parsed Events and Parsed Streams](docs/parsed-events.md) maps each feature to the call behind it, if you want to reuse the patterns in your own app.
 
 ## Quickstart
 
@@ -36,15 +36,16 @@ Prefer the terminal? The [CLI guide](docs/cli.md) walks through `init`, `report`
 
 ## Documentation
 
-| Guide                                  | Covers                                                                        |
-| -------------------------------------- | ----------------------------------------------------------------------------- |
-| [Dashboard](docs/dashboard.md)         | The tabs, stopping and starting, several monitors, hosting it for your team   |
-| [CLI](docs/cli.md)                     | Setting up, reports, live monitoring, running unattended, replaying exploits  |
-| [Detectors](docs/detectors.md)         | Every alert and its severity, and how alerts stay complete across restarts    |
-| [Discovery](docs/discovery.md)         | Admin keys, config accounts, multisigs, vaults and builds it finds on its own |
-| [Posture grade](docs/grading.md)       | The rubric behind the grade, and how to improve it                            |
-| [Configuration](docs/configuration.md) | Environment variables, options and what scans cost in credits                 |
-| [`AGENTS.md`](AGENTS.md)               | Code layout, conventions, API limits and the dashboard's JSON API             |
+| Guide                                              | Covers                                                                        |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [Parsed Events and Streams](docs/parsed-events.md) | How each feature uses the Helius APIs, with links to the code                 |
+| [Dashboard](docs/dashboard.md)                     | The tabs, stopping and starting, several monitors, hosting it for your team   |
+| [CLI](docs/cli.md)                                 | Setting up, reports, live monitoring, running unattended, replaying exploits  |
+| [Detectors](docs/detectors.md)                     | Every alert and its severity, and how alerts stay complete across restarts    |
+| [Discovery](docs/discovery.md)                     | Admin keys, config accounts, multisigs, vaults and builds it finds on its own |
+| [Posture grade](docs/grading.md)                   | The rubric behind the grade, and how to improve it                            |
+| [Configuration](docs/configuration.md)             | Environment variables, options and what scans cost in credits                 |
+| [`AGENTS.md`](AGENTS.md)                           | Code layout, conventions, API limits and the dashboard's JSON API             |
 
 ## What it detects
 
