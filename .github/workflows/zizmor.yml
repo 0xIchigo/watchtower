@@ -1,0 +1,41 @@
+name: Zizmor
+
+# Audits the workflow, action and Dependabot files for template injection, unpinned actions, excessive permissions
+# and similar. Medium-or-worse findings fail the job. Rules are in .github/zizmor.yml.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions: {}
+
+jobs:
+  zizmor:
+    # The install step fetches the x86_64 binary, so the runner must be x86_64 too.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install zizmor
+        run: |
+          curl -sSLo zizmor.tar.gz --fail --retry 3 --retry-all-errors https://github.com/zizmorcore/zizmor/releases/download/v1.29.0/zizmor-x86_64-unknown-linux-gnu.tar.gz
+          echo 'dd96df044a6e8538d5f423790f453bdd03d49e5b2bcc38214acc41a2f1297839  zizmor.tar.gz' | sha256sum -c -
+          tar -xzf zizmor.tar.gz zizmor
+      - name: Run zizmor
+        # GH_TOKEN enables the online audits (known-vulnerable-actions, impostor-commit, ref-confusion).
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rc=0
+          ./zizmor --no-progress --format=github --min-severity=medium .github/ || rc=$?
+          # Exit codes 10-14 are findings and fail the job. Any other nonzero is a tool error, such as a GitHub API
+          # blip during the online audits, so it warns instead of blocking.
+          if [ "$rc" -ge 10 ] && [ "$rc" -le 14 ]; then
+            exit "$rc"
+          elif [ "$rc" -ne 0 ]; then
+            echo "::warning title=zizmor::tool error (exit $rc); audit did not complete."
+          fi

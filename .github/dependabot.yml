@@ -4,6 +4,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # A release must be this old before Dependabot proposes it, so a compromised publish is caught first.
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     groups:
       # Its own pull request, so SDK changes are reviewed on their own.
@@ -24,6 +27,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 5
     groups:
       actions:
         patterns: ['*']

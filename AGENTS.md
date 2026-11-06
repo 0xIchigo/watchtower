@@ -25,7 +25,7 @@ pnpm build         # tsc → dist/
 pnpm dev <command> # run the CLI from source: init | report | watch | serve | replay | test-alert
 ```
 
-Run `pnpm check` before handing work back.
+Run `pnpm check` before handing work back. CI also runs Gitleaks on new commits (`.github/workflows/secret-scan.yml`) and zizmor on `.github/` (`.github/workflows/zizmor.yml`, rules in `.github/zizmor.yml`): pin third-party actions to a full commit SHA with a `# vX.Y.Z` comment, set `persist-credentials: false` on checkouts, and give Dependabot ecosystems a `cooldown`.
 
 ## Layout
 
